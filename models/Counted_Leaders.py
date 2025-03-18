@@ -1,6 +1,6 @@
 
 #from kemlglearn.cluster import Leader
-from scipy.spatial.distance import cdist
+from scipy.spatial.distance import euclidean
 from utils.tools import coincidence
 
 
@@ -11,7 +11,6 @@ class Counted_Leaders:
         self.radius = radius
         self.__call__()
 
-
     def __call__(self):
         L = []
         followers = {}
@@ -20,13 +19,12 @@ class Counted_Leaders:
         for x in self.X:
             candidates = []
             for l in L:
-
-                if cdist(x, l) < self.radius: # TODO: Fix bug
+                if euclidean(x, l) < self.radius:
                     candidates.append(l)
 
             if candidates == [] or L == []:
                 L.append(x)
-                followers[x.tobytes()] = x
+                followers[x.tobytes()] = [x]
                 count[x.tobytes()] = 1
             else:
                 leader = coincidence(L, candidates).tobytes()
