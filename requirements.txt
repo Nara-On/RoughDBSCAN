@@ -1,0 +1,2 @@
+scikit-learn~=1.6.1
+kemlglearn~=0.4.3
