@@ -1,42 +1,47 @@
 
-from sklearn.cluster import DBSCAN
 from models.Counted_Leaders import Counted_Leaders
+from models.DBSCAN import DBSCAN
+import numpy as np
 
 
 class Rough_DBSCAN:
     def __init__(self, epsilon, minPts, radius):
-        self.e = epsilon
+
+        # Prepare DBSCAN
+        self.dbscan = DBSCAN(epsilon, minPts)
+
+        # Save parameters
+        self.epsilon = epsilon
         self.minPts = minPts
+        self.radius = radius
+
+        # Prepare parameters
+        self.leaders = None
+        self.followers = None
+        self.follower_ids = None
+        self.counts = None
+        self.ids = None
+
+
+    def fit(self, D, verbose=True):
 
         # Prepare counted leaders
-        self.lstar = Counted_Leaders(X, radius)
-        self.leaders = None # Extract from lstar
+        lstar = Counted_Leaders(D, self.radius)
+        self.leaders = np.array(lstar.L)
+        self.followers = lstar.followers
+        self.counts = lstar.count
+        self.ids = lstar.ids
 
-    def fit(self, X):
-        pass
+        # Fit classification with leaders
+        pi = self.dbscan.fit(self.leaders, verbose=verbose)
+
+        # Substitute leaders with followers
+        classification = np.zeros(shape=(D.shape[0]))
+        for x, c in zip(self.leaders, pi):
+            classification[self.ids[tuple(x)]] = c
+
+        return classification
+
 
     def predict(self):
         pass
-
-    def fit_predict(self, X):
-        pass
-
-
-
-
-from sklearn.datasets import make_moons
-import matplotlib.pyplot as plt
-
-if __name__ == "__main__":
-    print("######## Starting Test ########\n")
-    print("Generating dataset...")
-    X, Y = make_moons(n_samples=4000, noise=0.1, random_state=0)
-    plt.scatter(X[:, 0], X[:, 1], c=Y)
-    plt.title("Banana dataset")
-    #plt.show()
-
-    print("\nStarting Classification...")
-    rdbscan = Rough_DBSCAN(0.1, 4, 8)
-
-
-

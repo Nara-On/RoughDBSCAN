@@ -1,34 +1,41 @@
 
-#from kemlglearn.cluster import Leader
 from scipy.spatial.distance import euclidean
 from utils.tools import coincidence
+
+import numpy as np
 
 
 class Counted_Leaders:
 
-    def __init__(self, X, radius):
-        self.X = X
+    def __init__(self, D, radius):
+        self.D = D
         self.radius = radius
         self.__call__()
 
     def __call__(self):
         L = []
         followers = {}
+        ids = {}
         count = {}
 
-        for x in self.X:
+        for i, x in enumerate(self.D):
             candidates = []
-            for l in L:
-                if euclidean(x, l) < self.radius:
-                    candidates.append(l)
+            for j in L:
+                if euclidean(x, j) < self.radius:
+                    candidates.append(j)
 
             if candidates == [] or L == []:
                 L.append(x)
-                followers[x.tobytes()] = [x]
-                count[x.tobytes()] = 1
+                followers[tuple(x)] = [x]
+                ids[tuple(x)] = [i]
+                count[tuple(x)] = 1
             else:
-                leader = coincidence(L, candidates).tobytes()
-                followers[leader].append(x)
-                count[leader] += 1
+                leader = coincidence(L, candidates)
+                followers[tuple(leader)].append(x)
+                ids[tuple(leader)].append(i)
+                count[tuple(leader)] += 1
 
-        return L, followers, count
+        self.L = L
+        self.followers = followers
+        self.count = count
+        self.ids = ids
