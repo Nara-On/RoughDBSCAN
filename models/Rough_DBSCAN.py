@@ -21,6 +21,7 @@ class Rough_DBSCAN:
         self.follower_ids = None
         self.counts = None
         self.ids = None
+        self.labels = None
 
 
     def fit(self, D, verbose=True):
@@ -32,16 +33,17 @@ class Rough_DBSCAN:
         self.counts = lstar.count
         self.ids = lstar.ids
 
-        # Fit classification with leaders
-        pi = self.dbscan.fit(self.leaders, verbose=verbose)
+        # Fit DBSCAN with leaders
+        pi = self.dbscan.fit_predict(self.leaders, verbose=verbose)
 
         # Substitute leaders with followers
         classification = np.zeros(shape=(D.shape[0]))
         for x, c in zip(self.leaders, pi):
             classification[self.ids[tuple(x)]] = c
 
-        return classification
+        self.labels = classification
 
 
-    def predict(self):
-        pass
+    def fit_predict(self, D, verbose=True):
+        self.fit(D, verbose)
+        return self.labels

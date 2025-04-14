@@ -8,6 +8,8 @@ class DBSCAN:
         self.epsilon = epsilon
         self.minPts = minPts
 
+        self.labels = None
+
 
     def fit(self, D, verbose=True):
 
@@ -61,8 +63,9 @@ class DBSCAN:
                             # Add each pattern of M which is not marked as "seen" to the list queue
                             q.extend(list(N[np.where(markings[N] != 1.0)[0]]))
 
-        return classification
+        self.labels = classification
 
 
-    def predict(self, X):
-        pass
+    def fit_predict(self, D, verbose=True):
+        self.fit(D, verbose)
+        return self.labels
