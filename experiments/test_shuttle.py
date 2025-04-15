@@ -8,14 +8,14 @@ root_saving = "../visuals/shuttle/"
 if __name__ == "__main__":
 
     # Hyperparameters
-    n_samples = 4000
-    noise = 0.05
+    size = 5000
 
-    epsilon = 2
-    minPts = 3
-    radius = 0.2
+    epsilon = 0.03
+    minPts = 20
+    radius = 0.001
 
 
     # Execute experiments
-    X, Y = shuttle()
-    experiment(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius, root_saving=root_saving)
+    X, Y = shuttle(size)
+    experiment(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
+               name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving)

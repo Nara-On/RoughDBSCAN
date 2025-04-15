@@ -9,7 +9,8 @@ from sklearn.cluster import DBSCAN
 from sklearn.metrics.cluster import rand_score
 
 
-def experiment(X, Y, epsilon, minPts, radius, root_saving="../visuals/", verbose=True):
+def experiment(X, Y, epsilon, minPts, radius, name_experiment,
+               root_saving="../visuals/", plots=True, verbose=True):
 
     if verbose:
         print("\nStarting RoughDBSCAN")
@@ -39,8 +40,11 @@ def experiment(X, Y, epsilon, minPts, radius, root_saving="../visuals/", verbose
         print(predictD)
         print("\nPlotting results")
 
-    generate_single_plots(X, Y, rdbscan.leaders, predictD, predictR, tfD, tfR,
-                          epsilon, minPts, radius, root_saving=root_saving)
+    if plots:
+        generate_single_plots(X, Y, rdbscan.leaders, predictD, predictR, tfD, tfR,
+                              epsilon, minPts, radius, name_experiment, root_saving=root_saving)
+
+    return dbscan, rdbscan, predictD, predictR, tfD, tfR
 
 
 
@@ -114,26 +118,26 @@ def plot_metrics_paper(Y, predictD, predictR, tfD, tfR, savePath):
 
 
 def generate_single_plots(X, Y, leaders, predictD, predictR, tfD, tfR,
-                          epsilon, minPts, radius,
+                          epsilon, minPts, radius, name_experiment,
                           root_saving="../visuals/", cmap_plots="cividis"):
 
     # Create folder
-    root = root_saving + f"E{epsilon}_T{minPts}_R{radius}/"
+    root = root_saving + "/" + name_experiment
     if not os.path.exists(root):
         os.makedirs(root)
 
 
     # Results RDBSCAN
     plot_RDBSCAN(X, Y, leaders, radius, predictR,
-                 root + f"rdbscan_all_E{epsilon}_T{minPts}_R{radius}.jpg", cmap_plots)
+                 root + f"/rdbscan_all_" + name_experiment + ".jpg", cmap_plots)
 
     # Leaders RDBSCAN
-    plot_leaders(X, Y, leaders, radius, root + f"rdbscan_leaders_E{epsilon}_T{minPts}_R{radius}.jpg", cmap_plots)
+    plot_leaders(X, Y, leaders, radius, root + f"/rdbscan_leaders_" + name_experiment + ".jpg", cmap_plots)
 
     # Results DBSCAN vs RDBSCAN
     plot_DBSCANnRDBSCAN(X, Y, predictD, predictR,
-                        root + f"comparison_models_E{epsilon}_T{minPts}_R{radius}.jpg", cmap_plots)
+                        root + f"/comparison_models_" + name_experiment + ".jpg", cmap_plots)
 
     # Metrics DBSCAN vs RDBSCAN
     plot_metrics_paper(Y, predictD, predictR, tfD, tfR,
-                       root + f"metrics_models_E{epsilon}_T{minPts}_R{radius}.jpg")
+                       root + f"/metrics_models_" + name_experiment + ".jpg",)

@@ -27,11 +27,14 @@ class Rough_DBSCAN:
     def fit(self, D, verbose=True):
 
         # Prepare counted leaders
+        if verbose:
+            print("Finding leaders...")
         lstar = Counted_Leaders(D, self.radius)
         self.leaders = np.array(lstar.L)
         self.followers = lstar.followers
         self.counts = lstar.count
         self.ids = lstar.ids
+
 
         # Fit DBSCAN with leaders
         pi = self.dbscan.rough_fit_predict(self.leaders, self.counts, verbose=verbose)

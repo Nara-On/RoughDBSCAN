@@ -2,6 +2,9 @@
 from sklearn.datasets import make_moons
 from sklearn.datasets import make_blobs
 
+import numpy as np
+import pandas as pd
+
 
 def banana(n_samples, noise, random_state=0, verbose=True):
     if verbose:
@@ -17,22 +20,34 @@ def blobs(n_samples, centers, cluster_std, random_state=0, verbose=True):
     return make_blobs(n_samples=n_samples, centers=centers, cluster_std=cluster_std, random_state=random_state)
 
 
-def letter(verbose=True):
+def letter(size, verbose=True):
     if verbose:
         print("\n-------- Starting Test --------\n")
         print("Loading LETTER dataset")
-    pass
+
+    data = np.loadtxt("../datasets/Letter/letter-recognition.data", dtype='float32', delimiter=',',
+                      converters={0: lambda ch: ord(ch) - ord('A')})
+
+    Y, X = np.hsplit(data[:size, :], [1])
+    return X, Y.reshape((Y.shape[0],))
 
 
-def pendigits(verbose=True):
+def pendigits(size, verbose=True):
     if verbose:
         print("\n-------- Starting Test --------\n")
         print("Loading PENDIGITS dataset")
     pass
 
 
-def shuttle(verbose=True):
+def shuttle(size, verbose=True):
     if verbose:
         print("\n-------- Starting Test --------\n")
         print("Loading SHUTTLE dataset")
-    pass
+
+    train = pd.read_csv("../datasets/Shuttle/shuttle.trn", delimiter=' ', header=None)
+    test = pd.read_csv("../datasets/Shuttle/shuttle.tst", delimiter=' ', header=None)
+
+    data = pd.concat([train, test])
+    X, Y = data.iloc[:size, :-1], data.iloc[:size, -1]
+
+    return X.to_numpy(), Y.to_numpy()

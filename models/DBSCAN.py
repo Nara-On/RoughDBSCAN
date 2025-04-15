@@ -28,7 +28,7 @@ class DBSCAN:
         for i, x in enumerate(L):
 
             if verbose:
-                print(f"Sample {i+1} of {L.shape[0]}: {round((i+1)/L.shape[0]*100,2)}%")
+                print(f"Leader {i+1} of {L.shape[0]}: {round((i+1)/L.shape[0]*100,2)}%")
 
             # If x is not marked as "seen"
             if markings[i] != 1:
@@ -39,7 +39,6 @@ class DBSCAN:
                 # Find subset of patterns in D that are present in the hyper-sphere of radius e at x
                 N, indN = find_rough_N(i, L, counts, distance_matrix, self.epsilon)
 
-                print(N)
                 if N < self.minPts:
                     # Mark x as "noise"
                     classification[i] = -1
