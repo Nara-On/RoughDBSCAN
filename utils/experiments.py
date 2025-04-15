@@ -4,6 +4,7 @@ import time
 import matplotlib.pyplot as plt
 
 from models.Rough_DBSCAN import Rough_DBSCAN
+#from models.DBSCAN import DBSCAN
 from sklearn.cluster import DBSCAN
 from sklearn.metrics.cluster import rand_score
 
@@ -38,19 +39,12 @@ def experiment(X, Y, epsilon, minPts, radius, root_saving="../visuals/", verbose
         print(predictD)
         print("\nPlotting results")
 
-    generate_plots(X, Y, predictR, rdbscan.leaders, tfR, predictD, tfD,
-                   radius, root_saving=root_saving)
+    generate_single_plots(X, Y, rdbscan.leaders, predictD, predictR, tfD, tfR,
+                          epsilon, minPts, radius, root_saving=root_saving)
 
 
-def generate_plots(X, Y, predictR, leaders, tfR, predictD, tfD,
-                   radius, root_saving="../visuals/", cmap_plots="cividis"):
 
-    # Create folder
-    if not os.path.exists(root_saving):
-        os.makedirs(root_saving)
-
-
-    # Results RDBSCAN
+def plot_RDBSCAN(X, Y, leaders, radius, predictR, savePath, cmap_plots="cividis"):
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
 
     scatter1 = ax1.scatter(X[:, 0], X[:, 1], c=predictR, cmap=cmap_plots, label=predictR)
@@ -68,10 +62,10 @@ def generate_plots(X, Y, predictR, leaders, tfR, predictD, tfD,
     ax3.set_title("True values")
 
     plt.tight_layout()
-    plt.savefig(root_saving + "rdbscan_all.jpg")
+    plt.savefig(savePath)
 
 
-    # Leaders RDBSCAN
+def plot_leaders(X, Y, leaders, radius, savePath, cmap_plots="cividis"):
     fig, ax = plt.subplots(1, 1, figsize=(8, 8))
     ax.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_plots)
     for pts in leaders:
@@ -81,10 +75,10 @@ def generate_plots(X, Y, predictR, leaders, tfR, predictD, tfD,
     ax.set_title("Leaders")
 
     plt.tight_layout()
-    plt.savefig(root_saving + "rdbscan_leaders.jpg")
+    plt.savefig(savePath)
 
 
-    # Results DBSCAN vs RDBSCAN
+def plot_DBSCANnRDBSCAN(X, Y, predictD, predictR, savePath, cmap_plots="cividis"):
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
 
     scatter1 = ax1.scatter(X[:, 0], X[:, 1], c=predictR, cmap=cmap_plots, label=predictR)
@@ -99,15 +93,15 @@ def generate_plots(X, Y, predictR, leaders, tfR, predictD, tfD,
     ax3.set_title("True values")
 
     plt.tight_layout()
-    plt.savefig(root_saving + "comparison_models.jpg")
+    plt.savefig(savePath)
 
 
-    # Metrics DBSCAN vs RDBSCAN
+def plot_metrics_paper(Y, predictD, predictR, tfD, tfR, savePath):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
     bar1 = ax1.bar(["Rough DBSCAN", "DBSCAN"], [rand_score(Y, predictR), rand_score(Y, predictD)], color=["tab:orange", "tab:cyan"])
     ax1.bar_label(bar1, fmt='%.2f')
-    ax1.set_ylim([0, 1])
+    ax1.set_ylim([0.0, 1.0])
     ax1.set_title("Rand Index")
 
     bar2 = ax2.bar(["Rough DBSCAN", "DBSCAN"], [tfR, tfD], color=["tab:orange", "tab:cyan"])
@@ -115,4 +109,31 @@ def generate_plots(X, Y, predictR, leaders, tfR, predictD, tfD,
     ax2.set_title("Time")
 
     plt.tight_layout()
-    plt.savefig(root_saving + "metrics_models.jpg")
+    plt.savefig(savePath)
+
+
+
+def generate_single_plots(X, Y, leaders, predictD, predictR, tfD, tfR,
+                          epsilon, minPts, radius,
+                          root_saving="../visuals/", cmap_plots="cividis"):
+
+    # Create folder
+    root = root_saving + f"E{epsilon}_T{minPts}_R{radius}/"
+    if not os.path.exists(root):
+        os.makedirs(root)
+
+
+    # Results RDBSCAN
+    plot_RDBSCAN(X, Y, leaders, radius, predictR,
+                 root + f"rdbscan_all_E{epsilon}_T{minPts}_R{radius}.jpg", cmap_plots)
+
+    # Leaders RDBSCAN
+    plot_leaders(X, Y, leaders, radius, root + f"rdbscan_leaders_E{epsilon}_T{minPts}_R{radius}.jpg", cmap_plots)
+
+    # Results DBSCAN vs RDBSCAN
+    plot_DBSCANnRDBSCAN(X, Y, predictD, predictR,
+                        root + f"comparison_models_E{epsilon}_T{minPts}_R{radius}.jpg", cmap_plots)
+
+    # Metrics DBSCAN vs RDBSCAN
+    plot_metrics_paper(Y, predictD, predictR, tfD, tfR,
+                       root + f"metrics_models_E{epsilon}_T{minPts}_R{radius}.jpg")

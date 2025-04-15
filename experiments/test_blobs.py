@@ -12,9 +12,9 @@ if __name__ == "__main__":
     centers = 3
     cluster_std = 0.5
 
-    epsilon = 2.45
+    epsilon = 0.5
     minPts = 30
-    radius = 0.4
+    radius = 0.2
 
 
     # Execute experiments

@@ -34,7 +34,7 @@ class Rough_DBSCAN:
         self.ids = lstar.ids
 
         # Fit DBSCAN with leaders
-        pi = self.dbscan.fit_predict(self.leaders, verbose=verbose)
+        pi = self.dbscan.rough_fit_predict(self.leaders, self.counts, verbose=verbose)
 
         # Substitute leaders with followers
         classification = np.zeros(shape=(D.shape[0]))
