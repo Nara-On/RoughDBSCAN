@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     epsilon = 0.5
     minPts = 30
-    radius = 0.2
+    radius = 0.5
 
     plots = True
 

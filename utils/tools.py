@@ -1,8 +1,5 @@
 
 import numpy as np
-from scipy.cluster.hierarchy import leaders
-from scipy.spatial.distance import euclidean
-import pprint
 
 
 def coincidence(main, lookup):
@@ -14,9 +11,9 @@ def coincidence(main, lookup):
                 return s
 
 
-def find_N(i, D, e):
-    distances = [euclidean(i, t) for t in D]
-    return np.where([d<=e for d in distances])[0]
+def find_N(i, D, distances, e):
+    ind = np.where([d <= e for d in distances[i, :]])[0]
+    return len(ind), ind
 
 
 def find_rough_N(l, L, counts, distances, e):

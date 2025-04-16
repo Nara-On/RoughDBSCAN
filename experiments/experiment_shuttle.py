@@ -14,16 +14,10 @@ sizes = [5000, 10000, 15000, 20000, 25000]
 if __name__ == "__main__":
 
     # Hyperparameters
-    size = 5000
-
-    epsilon = 0.03
-    minPts = 20
-    radius = 0.001
-
     plots = True
 
 
     # Execute experiments
-    X, Y = shuttle(size)
-    experiment(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
-               name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving, plots=plots)
+    #X, Y = shuttle(size)
+    #experiment(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
+    #           name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving, plots=plots)

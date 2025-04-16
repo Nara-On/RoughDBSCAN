@@ -36,7 +36,11 @@ def pendigits(size, verbose=True):
     if verbose:
         print("\n-------- Starting Test --------\n")
         print("Loading PENDIGITS dataset")
-    pass
+
+    data = pd.read_csv("../datasets/Pendigits/pendigits_txt.csv", delimiter=',')
+    X, Y = data.iloc[:size, :-1], data.iloc[:size, -1]
+
+    return X.to_numpy(), Y.to_numpy()
 
 
 def shuttle(size, verbose=True):

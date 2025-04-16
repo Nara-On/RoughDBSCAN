@@ -13,11 +13,60 @@ class DBSCAN:
 
 
     def fit(self, D, verbose=True):
-        pass
+        cid = 0
+
+        classification = np.zeros(shape=(D.shape[0]))  # -1=Noise, 0=Init, Else=Cluster
+        markings = np.zeros((D.shape[0]))  # 0=Unseen, 1=Seen
+        distance_matrix = cdist(D, D, 'euclidean')
+
+        for i, x in enumerate(D):
+
+            if verbose:
+                print(f"Sample {i + 1} of {D.shape[0]}: {round((i + 1) / D.shape[0] * 100, 2)}%")
+
+            # If x is not marked as "seen"
+            if markings[i] != 1:
+
+                # Mark x as "seen"
+                markings[i] = 1
+
+                # Find subset of patterns in D that are present in the hyper-sphere of radius e at x
+                N, indN = find_N(i, D, distance_matrix, self.epsilon)
+
+                if N < self.minPts:
+                    # Mark x as "noise"
+                    classification[i] = -1
+
+                else:
+                    # Mark x as "seen"
+                    markings[i] = 1
+                    cid += 1
+
+                    # Mark each pattern of N with cluster identifier cid
+                    classification[indN] = cid
+
+                    # Add each pattern of N which is not marked as "seen"
+                    q = list(indN[np.where(markings[indN] != 1.0)[0]])
+
+                    while q:
+                        # Take pattern y from queue and mark it as "seen"; Remove y from queue
+                        j = q.pop(0)
+                        markings[j] = 1
+
+                        M, indM = find_N(j, D, distance_matrix, self.epsilon)
+
+                        if M > self.minPts:
+                            # Mark each pattern of M with cluster identifier cid
+                            # If any pattern of M is marked as "noise" then remove this mark.
+                            classification[indM] = cid
+
+                            # Add each pattern of M which is not marked as "seen" to the list queue
+                            q.extend(list(indM[np.where(markings[indM] != 1.0)[0]]))
+
+        self.labels = classification
 
 
     def rough_fit(self, L, counts, verbose=True):
-
         cid = 0
 
         classification = np.zeros(shape=(L.shape[0])) #-1=Noise, 0=Init, Else=Cluster
@@ -75,6 +124,7 @@ class DBSCAN:
     def fit_predict(self, D, verbose=True):
         self.fit(D, verbose)
         return self.labels
+
 
     def rough_fit_predict(self, L, counts, verbose=True):
         self.rough_fit(L, counts, verbose)

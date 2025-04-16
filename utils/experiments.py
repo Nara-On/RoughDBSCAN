@@ -4,8 +4,8 @@ import time
 import matplotlib.pyplot as plt
 
 from models.Rough_DBSCAN import Rough_DBSCAN
-#from models.DBSCAN import DBSCAN
-from sklearn.cluster import DBSCAN
+from models.DBSCAN import DBSCAN
+#from sklearn.cluster import DBSCAN
 from sklearn.metrics.cluster import rand_score
 
 
@@ -28,7 +28,7 @@ def experiment(X, Y, epsilon, minPts, radius, name_experiment,
         print(predictR)
         print("\nStarting DBSCAN")
         print(f"Parameters: Epsilon={epsilon}, MinPts={minPts}")
-    dbscan = DBSCAN(eps=epsilon, min_samples=minPts)
+    dbscan = DBSCAN(epsilon, minPts)
 
     if verbose:
         print("Fitting...")

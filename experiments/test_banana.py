@@ -8,12 +8,12 @@ root_saving = "../visuals/banana/"
 if __name__ == "__main__":
 
     # Hyperparameters
-    n_samples = 4000
+    n_samples = 500
     noise = 0.05
 
     epsilon = 0.2
     minPts = 8
-    radius = 0.1
+    radius = 0.5
 
     plots = True
 
