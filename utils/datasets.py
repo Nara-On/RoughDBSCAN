@@ -8,22 +8,19 @@ import pandas as pd
 
 def banana(n_samples, noise, random_state=0, verbose=True):
     if verbose:
-        print("\n-------- Starting Test --------\n")
-        print("Generating BANANA dataset")
+        print(f"Generating {n_samples} samples from BANANA dataset")
     return make_moons(n_samples=n_samples, noise=noise, random_state=random_state)
 
 
 def blobs(n_samples, centers, cluster_std, random_state=0, verbose=True):
     if verbose:
-        print("\n-------- Starting Test --------\n")
-        print("Generating BLOBS dataset")
+        print(f"Generating {n_samples} samples from BLOBS dataset")
     return make_blobs(n_samples=n_samples, centers=centers, cluster_std=cluster_std, random_state=random_state)
 
 
 def letter(size, verbose=True):
     if verbose:
-        print("\n-------- Starting Test --------\n")
-        print("Loading LETTER dataset")
+        print(f"Loading {size} samples from LETTER dataset")
 
     data = np.loadtxt("../datasets/Letter/letter-recognition.data", dtype='float32', delimiter=',',
                       converters={0: lambda ch: ord(ch) - ord('A')})
@@ -34,8 +31,7 @@ def letter(size, verbose=True):
 
 def pendigits(size, verbose=True):
     if verbose:
-        print("\n-------- Starting Test --------\n")
-        print("Loading PENDIGITS dataset")
+        print(f"Loading {size} samples from PENDIGITS dataset")
 
     data = pd.read_csv("../datasets/Pendigits/pendigits_txt.csv", delimiter=',')
     X, Y = data.iloc[:size, :-1], data.iloc[:size, -1]
@@ -45,8 +41,7 @@ def pendigits(size, verbose=True):
 
 def shuttle(size, verbose=True):
     if verbose:
-        print("\n-------- Starting Test --------\n")
-        print("Loading SHUTTLE dataset")
+        print(f"\nLoading {size} samples from SHUTTLE dataset")
 
     train = pd.read_csv("../datasets/Shuttle/shuttle.trn", delimiter=' ', header=None)
     test = pd.read_csv("../datasets/Shuttle/shuttle.tst", delimiter=' ', header=None)

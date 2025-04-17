@@ -1,3 +1,4 @@
+import time
 
 import numpy as np
 from utils.tools import find_N
@@ -9,10 +10,24 @@ class DBSCAN:
     def __init__(self, epsilon, minPts):
         self.epsilon = epsilon
         self.minPts = minPts
+
         self.labels = None
+        self.timelimit = None
 
 
-    def fit(self, D, verbose=True):
+    def fit(self, D, timelimit=None, verbose=True):
+
+        # Limit execution time to an hour
+        t0 = 0
+        limit = False
+        self.timelimit = timelimit
+
+        if timelimit is not None:
+            t0 = time.time()
+            limit = True
+
+
+        # DBSCAN
         cid = 0
 
         classification = np.zeros(shape=(D.shape[0]))  # -1=Noise, 0=Init, Else=Cluster
@@ -63,10 +78,15 @@ class DBSCAN:
                             # Add each pattern of M which is not marked as "seen" to the list queue
                             q.extend(list(indM[np.where(markings[indM] != 1.0)[0]]))
 
+                        if limit and (timelimit < (time.time() - t0)):
+                            self.labels = classification
+                            return 1
+
         self.labels = classification
 
 
     def rough_fit(self, L, counts, verbose=True):
+
         cid = 0
 
         classification = np.zeros(shape=(L.shape[0])) #-1=Noise, 0=Init, Else=Cluster
@@ -121,8 +141,8 @@ class DBSCAN:
         self.labels = classification
 
 
-    def fit_predict(self, D, verbose=True):
-        self.fit(D, verbose)
+    def fit_predict(self, D, timelimit=None, verbose=True):
+        self.fit(D, timelimit, verbose)
         return self.labels
 
 

@@ -1,8 +1,8 @@
 
 from utils.datasets import pendigits
-from utils.experiments import experiment
+from utils.experiments import test
 
-root_saving = "../visuals/pendigits/"
+root_saving = "../visuals/tests/pendigits/"
 
 
 if __name__ == "__main__":
@@ -19,5 +19,5 @@ if __name__ == "__main__":
 
     # Execute experiments
     X, Y = pendigits(size)
-    experiment(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
+    test(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
                name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving, plots=plots)

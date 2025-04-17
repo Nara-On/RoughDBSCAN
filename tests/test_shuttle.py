@@ -1,8 +1,8 @@
 
 from utils.datasets import shuttle
-from utils.experiments import experiment
+from utils.experiments import test
 
-root_saving = "../visuals/shuttle/"
+root_saving = "../visuals/tests/shuttle/"
 
 
 if __name__ == "__main__":
@@ -17,5 +17,5 @@ if __name__ == "__main__":
 
     # Execute experiments
     X, Y = shuttle(size)
-    experiment(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
+    test(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
                name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving)

@@ -1,15 +1,20 @@
 
 import os
 import time
-import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
 
+from experiments.experiment_blobs import sizes
 from models.Rough_DBSCAN import Rough_DBSCAN
 from models.DBSCAN import DBSCAN
 #from sklearn.cluster import DBSCAN
+from models.Counted_Leaders import Counted_Leaders
 from sklearn.metrics.cluster import rand_score
 
+from utils.plots import generate_single_plots, plot_leaders, plot_leader_count
 
-def experiment(X, Y, epsilon, minPts, radius, name_experiment,
+
+def test(X, Y, epsilon, minPts, radius, name_experiment,
                root_saving="../visuals/", plots=True, verbose=True):
 
     if verbose:
@@ -33,7 +38,7 @@ def experiment(X, Y, epsilon, minPts, radius, name_experiment,
     if verbose:
         print("Fitting...")
     toD = time.time()
-    predictD = dbscan.fit_predict(X)
+    predictD = dbscan.fit_predict(X, timelimit=3600, verbose=verbose)
     tfD = time.time() - toD
 
     if verbose:
@@ -48,96 +53,102 @@ def experiment(X, Y, epsilon, minPts, radius, name_experiment,
 
 
 
-def plot_RDBSCAN(X, Y, leaders, radius, predictR, savePath, cmap_plots="cividis"):
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+def experiment(epsilons, minPts, rs, sizes, dataset,
+               name_experiment, root_saving="../visuals/", verbose=True):
 
-    scatter1 = ax1.scatter(X[:, 0], X[:, 1], c=predictR, cmap=cmap_plots, label=predictR)
-    ax1.legend(*scatter1.legend_elements())
-    ax1.set_title("Rough DBSCAN")
-
-    ax2.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_plots)
-    for pts in leaders:
-        ax2.scatter(pts[0], pts[1], c="crimson")
-        circle = plt.Circle(xy=(pts[0], pts[1]), radius=radius, color="crimson", alpha=0.25)
-        ax2.add_patch(circle)
-    ax2.set_title("Leaders")
-
-    ax3.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_plots)
-    ax3.set_title("True values")
-
-    plt.tight_layout()
-    plt.savefig(savePath)
-
-
-def plot_leaders(X, Y, leaders, radius, savePath, cmap_plots="cividis"):
-    fig, ax = plt.subplots(1, 1, figsize=(8, 8))
-    ax.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_plots)
-    for pts in leaders:
-        ax.scatter(pts[0], pts[1], c="crimson")
-        circle = plt.Circle(xy=(pts[0], pts[1]), radius=radius, color="crimson", alpha=0.25)
-        ax.add_patch(circle)
-    ax.set_title("Leaders")
-
-    plt.tight_layout()
-    plt.savefig(savePath)
-
-
-def plot_DBSCANnRDBSCAN(X, Y, predictD, predictR, savePath, cmap_plots="cividis"):
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
-
-    scatter1 = ax1.scatter(X[:, 0], X[:, 1], c=predictR, cmap=cmap_plots, label=predictR)
-    ax1.legend(*scatter1.legend_elements())
-    ax1.set_title("Rough DBSCAN")
-
-    scatter2 = ax2.scatter(X[:, 0], X[:, 1], c=predictD, cmap=cmap_plots, label=predictD)
-    ax2.legend(*scatter2.legend_elements())
-    ax2.set_title("DBSCAN")
-
-    ax3.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_plots)
-    ax3.set_title("True values")
-
-    plt.tight_layout()
-    plt.savefig(savePath)
-
-
-def plot_metrics_paper(Y, predictD, predictR, tfD, tfR, savePath):
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
-
-    bar1 = ax1.bar(["Rough DBSCAN", "DBSCAN"], [rand_score(Y, predictR), rand_score(Y, predictD)], color=["tab:orange", "tab:cyan"])
-    ax1.bar_label(bar1, fmt='%.2f')
-    ax1.set_ylim([0.0, 1.0])
-    ax1.set_title("Rand Index")
-
-    bar2 = ax2.bar(["Rough DBSCAN", "DBSCAN"], [tfR, tfD], color=["tab:orange", "tab:cyan"])
-    ax2.bar_label(bar2, fmt='%.2f')
-    ax2.set_title("Time")
-
-    plt.tight_layout()
-    plt.savefig(savePath)
-
-
-
-def generate_single_plots(X, Y, leaders, predictD, predictR, tfD, tfR,
-                          epsilon, minPts, radius, name_experiment,
-                          root_saving="../visuals/", cmap_plots="cividis"):
-
-    # Create folder
-    root = root_saving + "/" + name_experiment
+    root = root_saving
     if not os.path.exists(root):
         os.makedirs(root)
 
+    column_names = ["Size", "Epsilon", "MinPts", "Radius", "Leaders", "Leaders Count",
+                    "Classification RoughDBSCAN", "Classification DBSCAN",
+                    "Rand-Index RoughDBSCAN", "Rand-Index DBSCAN", "Time RoughDBSCAN", "Time DBSCAN"]
 
-    # Results RDBSCAN
-    plot_RDBSCAN(X, Y, leaders, radius, predictR,
-                 root + f"/rdbscan_all_" + name_experiment + ".jpg", cmap_plots)
+    results = pd.DataFrame(columns=column_names)
 
-    # Leaders RDBSCAN
-    plot_leaders(X, Y, leaders, radius, root + f"/rdbscan_leaders_" + name_experiment + ".jpg", cmap_plots)
+    it = 0
+    iterations = len(epsilons) * len(minPts) * len(rs) * len(sizes)
 
-    # Results DBSCAN vs RDBSCAN
-    plot_DBSCANnRDBSCAN(X, Y, predictD, predictR,
-                        root + f"/comparison_models_" + name_experiment + ".jpg", cmap_plots)
+    for s in sizes:
+        X,Y = dataset(s, verbose=verbose)
 
-    # Metrics DBSCAN vs RDBSCAN
-    plot_metrics_paper(Y, predictD, predictR, tfD, tfR,
-                       root + f"/metrics_models_" + name_experiment + ".jpg",)
+        for e in epsilons:
+            for pts in minPts:
+                for r in rs:
+
+                    if verbose:
+                        print(f"Experiment {it+1} of {iterations}: {round((it+1)/iterations*100,2)}%")
+
+                    dbscan, rdbscan, predictD, predictR, tfD, tfR = test(X=X, Y=Y, epsilon=e, minPts=pts, radius=r,
+                           name_experiment=f"{s}_E{e}_T{pts}_R{r}", root_saving=root_saving, plots=False, verbose=verbose)
+
+                    if dbscan.timelimit is not None:
+                        tfD = 3600 # Default One Hour Limit Exceeded
+
+                    results_experiment = pd.Series({
+                        "Size": s,
+                        "Epsilon": e,
+                        "MinPts": pts,
+                        "Radius": r,
+
+                        "Leaders": np.array(rdbscan.leaders),
+                        "Leaders Count": len(rdbscan.leaders),
+
+                        "Classification RoughDBSCAN": predictR,
+                        "Classification DBSCAN": predictD,
+
+                        "Rand-Index RoughDBSCAN": rand_score(Y, predictR),
+                        "Rand-Index DBSCAN": rand_score(Y, predictD),
+
+                        "Time RoughDBSCAN": tfR,
+                        "Time DBSCAN": tfD
+                    })
+
+                    results.loc[len(results)] = results_experiment
+                    results.to_csv(root_saving + name_experiment + ".csv", index=False)
+                    it += 1
+    return results
+
+
+def experiment_leaders(datasets, root_saving="../visuals/", plots=True, verbose=True):
+
+    column_names = ["Name", "Size", "Radius", "Leaders", "Leaders Count", "Time"]
+    results = pd.DataFrame(columns=column_names)
+
+    it = 0
+    iterations = 1
+    for its in datasets:
+        iterations *= len(its[2]) * len(its[3])
+
+    for name, data, sizes, radius in datasets:
+        for s in sizes:
+            for r in radius:
+
+                if verbose:
+                    print(f"Experiment {it + 1} of {iterations}: {round((it + 1) / iterations * 100, 2)}%")
+
+                X,Y = data(s, verbose)
+
+                to = time.time()
+                leaders = np.array(Counted_Leaders(X, r))
+                tf = time.time() - to
+
+                results_experiment = pd.Series({
+                    "Name": name,
+                    "Size": s,
+                    "Radius": r,
+                    "Leaders": leaders,
+                    "Leaders Count": len(leaders),
+                    "Time DBSCAN": tf
+                })
+
+                results.loc[len(results)] = results_experiment
+                results.to_csv(root_saving + name + ".csv", index=False)
+
+                if plots:
+                    plot_leaders(X, Y, leaders, r, root_saving + f"leader_{name}_{s}_{r}")
+
+                it += 1
+
+    if plots:
+        plot_leader_count(results, root_saving + "results_leaders_patterns")
