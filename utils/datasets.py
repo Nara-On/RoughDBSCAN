@@ -6,16 +6,16 @@ import numpy as np
 import pandas as pd
 
 
-def banana(n_samples, noise, random_state=0, verbose=True):
+def banana(n_samples, noise=0.05, random_state=0, verbose=True):
     if verbose:
         print(f"Generating {n_samples} samples from BANANA dataset")
     return make_moons(n_samples=n_samples, noise=noise, random_state=random_state)
 
 
-def blobs(n_samples, centers, cluster_std, random_state=0, verbose=True):
+def blobs(n_samples, centers=3, cluster_std=0.5, random_state=0, verbose=True):
     if verbose:
         print(f"Generating {n_samples} samples from BLOBS dataset")
-    return make_blobs(n_samples=n_samples, centers=centers, cluster_std=cluster_std, random_state=random_state)
+    return make_blobs(n_samples=n_samples, centers=int(centers), cluster_std=cluster_std, random_state=random_state)
 
 
 def letter(size, verbose=True):
@@ -41,7 +41,7 @@ def pendigits(size, verbose=True):
 
 def shuttle(size, verbose=True):
     if verbose:
-        print(f"\nLoading {size} samples from SHUTTLE dataset")
+        print(f"Loading {size} samples from SHUTTLE dataset")
 
     train = pd.read_csv("../datasets/Shuttle/shuttle.trn", delimiter=' ', header=None)
     test = pd.read_csv("../datasets/Shuttle/shuttle.tst", delimiter=' ', header=None)

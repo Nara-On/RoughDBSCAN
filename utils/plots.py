@@ -74,9 +74,16 @@ def plot_metrics_paper(Y, predictD, predictR, tfD, tfR, savePath):
     plt.savefig(savePath)
 
 
+def plot_dataset(X, Y, name, savePath, cmap_plots="cividis"):
+    fig, ax = plt.subplots(1, 1, figsize=(10, 8))
+    ax.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_plots)
+    ax.set_title(name)
+    plt.tight_layout()
+    plt.savefig(savePath)
+
 
 def generate_single_plots(X, Y, leaders, predictD, predictR, tfD, tfR,
-                          epsilon, minPts, radius, name_experiment,
+                          radius, name_experiment,
                           root_saving="../visuals/", cmap_plots="cividis"):
 
     # Create folder
@@ -101,29 +108,29 @@ def generate_single_plots(X, Y, leaders, predictD, predictR, tfD, tfR,
                        root + f"/metrics_models_" + name_experiment + ".jpg")
 
 
-def plot_leader_count(leaders_list, savePath):
+def plot_leader_count(leaders, savePath, figsize_w=15, figsize_h=20):
 
-    n_plots = len(leaders_list)
-    rows = math.ceil(n_plots / 2)
-    columns = n_plots - rows
+    datasets = np.unique(leaders["Name"])
+    n_plots = len(datasets)
 
-    fig, ax = plt.subplots(rows, columns, figsize=(10, 5))
+    if n_plots == 2:
+        fig, ax = plt.subplots(1, 2, figsize=(figsize_w, figsize_h))
+    else:
+        rows = math.ceil(n_plots / 2)
+        columns = n_plots - rows
+        fig, ax = plt.subplots(rows, columns, figsize=(figsize_w, figsize_h))
+        ax = ax.flatten()
 
-    for i, name, results in enumerate(leaders_list):
-        thresholds = results["Radius"]
+    for i, name in enumerate(datasets):
+        thresholds = np.unique(leaders.loc[leaders["Name"] == name, "Radius"])
 
-        #thresholds = np.unique(results["Radius"])
-        #for th in thresholds:
-        #   leader_count = results.loc[results["Radius"] == th, "Leaders Count"]
-        #   sizes = results.loc[results["Radius"] == th, "Size"]
-        #   scatter = ax[i].scatter(sizes, leader_count, label=th)
-
-        leader_count = results["Leaders Count"]
-        sizes = results["Size"]
-        ax[i].scatter(sizes, leader_count, label=thresholds)
+        for th in thresholds:
+           leader_count = leaders.loc[(leaders["Radius"] == th) & (leaders["Name"] == name), "Leaders Count"]
+           sizes = leaders.loc[(leaders["Radius"] == th) & (leaders["Name"] == name), "Size"]
+           ax[i].plot(sizes, leader_count, linestyle='--', marker='x', label=th)
 
         ax[i].legend()
-        ax[i].set_title(results["Name"])
+        ax[i].set_title(name)
 
     plt.tight_layout()
     plt.savefig(savePath)

@@ -1,13 +1,13 @@
-from pandas import read_csv
 
 from utils.datasets import pendigits
 from utils.experiments import experiment
 
 root_saving = "../visuals/experiments/pendigits/"
+
 sizes = [1000, 2000, 4000, 6000, 8000]
+minPts = [4, 8, 16, 24, 32]
 
 epsilons = [40]
-minPts = [4]
 rs = [30, 25, 20, 15]
 
 
