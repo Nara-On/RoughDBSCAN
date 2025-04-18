@@ -14,10 +14,8 @@ if __name__ == "__main__":
     minPts = 8
     radius = 0.25
 
-    plots = True
-
 
     # Test code
     X, Y = letter(size)
     test(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
-               name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving, plots=plots)
+         name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving, plots=True)

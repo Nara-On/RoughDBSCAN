@@ -18,4 +18,4 @@ if __name__ == "__main__":
     # Execute experiments
     X, Y = shuttle(size)
     test(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
-               name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving)
+         name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving, plots=True)

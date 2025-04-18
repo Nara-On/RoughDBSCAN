@@ -14,10 +14,8 @@ if __name__ == "__main__":
     minPts = 4
     radius = 15
 
-    plots = True
-
 
     # Execute experiments
     X, Y = pendigits(size)
     test(X=X, Y=Y, epsilon=epsilon, minPts=minPts, radius=radius,
-               name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving, plots=plots)
+         name_experiment=f"{size}_E{epsilon}_T{minPts}_R{radius}", root_saving=root_saving, plots=True)

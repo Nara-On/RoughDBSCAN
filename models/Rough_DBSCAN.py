@@ -1,6 +1,6 @@
 
 from models.Counted_Leaders import Counted_Leaders
-from models.DBSCAN import DBSCAN
+from models.DBSCAN import DBSCAN_scratch
 import numpy as np
 
 
@@ -8,7 +8,7 @@ class Rough_DBSCAN:
     def __init__(self, epsilon, minPts, radius):
 
         # Prepare DBSCAN
-        self.dbscan = DBSCAN(epsilon, minPts)
+        self.dbscan = DBSCAN_scratch(epsilon, minPts)
 
         # Save parameters
         self.epsilon = epsilon

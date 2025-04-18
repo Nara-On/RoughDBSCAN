@@ -1,11 +1,9 @@
 
 from utils.datasets import blobs, banana, letter, pendigits, shuttle
 from utils.experiments import experiment_counted_leaders
+from utils.plots import plot_leader_count
 
-from pandas import read_csv
-from utils.plots import plot_leader_count, plot_dataset
-
-root_saving = "../visuals/experiments/leaders/"
+root_saving = "../visuals/experiments/leaders/new_"
 
 parameters = [
     ("Banana", banana, [1000, 2000, 3000, 4000, 5000], [0.1, 0.25, 0.5, 0.75]),
@@ -17,8 +15,7 @@ parameters = [
 
 
 if __name__ == "__main__":
-    #results = experiment_counted_leaders(parameters, root_saving=root_saving)
-    results = read_csv("../visuals/experiments/leaders/results_leaders_patterns.csv")
+    results = experiment_counted_leaders(parameters, root_saving=root_saving)
 
     plot_leader_count(results, root_saving + "results_leaders_patterns.jpg",
                       figsize_w=18, figsize_h=15)

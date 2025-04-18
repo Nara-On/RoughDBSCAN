@@ -5,17 +5,16 @@ import pandas as pd
 import numpy as np
 
 from models.Rough_DBSCAN import Rough_DBSCAN
-from models.DBSCAN import DBSCAN
-#from sklearn.cluster import DBSCAN
+from models.DBSCAN import DBSCAN_scratch
+from sklearn.cluster import DBSCAN
 from models.Counted_Leaders import Counted_Leaders
 
 from sklearn.metrics.cluster import rand_score
-from utils.plots import generate_single_plots, plot_leaders, plot_leader_count
+from utils.plots import generate_single_plots, plot_leader_count
 
 
-def test(X, Y, epsilon, minPts, radius, name_experiment,
-               root_saving="../visuals/", plots=True, verbose=True):
 
+def test_RDBSCAN(X, epsilon, minPts, radius, verbose=True):
     if verbose:
         print("\nStarting RoughDBSCAN")
         print(f"Parameters: Epsilon={epsilon}, MinPts={minPts}, Radius={radius}")
@@ -28,11 +27,14 @@ def test(X, Y, epsilon, minPts, radius, name_experiment,
     predictR = rdbscan.fit_predict(X, verbose=verbose)
     tfR = time.time() - toR
 
+    return rdbscan, predictR, tfR
+
+
+def test_DBSCAN_scratch(X, epsilon, minPts, verbose=True):
     if verbose:
-        print(predictR)
         print("\nStarting DBSCAN")
         print(f"Parameters: Epsilon={epsilon}, MinPts={minPts}")
-    dbscan = DBSCAN(epsilon, minPts)
+    dbscan = DBSCAN_scratch(epsilon, minPts)
 
     if verbose:
         print("Fitting...")
@@ -40,11 +42,37 @@ def test(X, Y, epsilon, minPts, radius, name_experiment,
     predictD = dbscan.fit_predict(X, timelimit=3600, verbose=verbose)
     tfD = time.time() - toD
 
+    return dbscan, predictD, tfD
+
+
+def test_DBSCAN_sklearn(X, epsilon, minPts, verbose=True):
     if verbose:
-        print(predictD)
-        print("\nPlotting results")
+        print("\nStarting DBSCAN")
+        print(f"Parameters: Epsilon={epsilon}, MinPts={minPts}")
+    dbscan = DBSCAN(eps=epsilon, min_samples=minPts)
+
+    if verbose:
+        print("Fitting...")
+    toD = time.time()
+    predictD = dbscan.fit_predict(X)
+    tfD = time.time() - toD
+
+    return dbscan, predictD, tfD
+
+
+def test(X, Y, epsilon, minPts, radius, name_experiment,
+               root_saving="../visuals/", plots=True, sklearn=False, verbose=True):
+
+    rdbscan, predictR, tfR = test_RDBSCAN(X, epsilon, minPts, radius, verbose=True)
+
+    if sklearn:
+        dbscan, predictD, tfD = test_DBSCAN_sklearn(X, epsilon, minPts, verbose=True)
+    else:
+        dbscan, predictD, tfD = test_DBSCAN_scratch(X, epsilon, minPts, verbose=True)
 
     if plots:
+        if verbose:
+            print("\nPlotting results")
         generate_single_plots(X, Y, rdbscan.leaders, predictD, predictR, tfD, tfR,
                               radius, name_experiment, root_saving=root_saving)
 
@@ -53,7 +81,7 @@ def test(X, Y, epsilon, minPts, radius, name_experiment,
 
 
 def experiment(epsilons, minPts, rs, sizes, dataset,
-               name_experiment, root_saving="../visuals/", verbose=True):
+               name_experiment, root_saving="../visuals/", sklearn=False, verbose=True):
 
     # Create Directory
     root = root_saving
@@ -76,40 +104,54 @@ def experiment(epsilons, minPts, rs, sizes, dataset,
         X,Y = dataset(s, verbose=verbose)
 
         for e in epsilons:
+
+            results_RDBSCAN = []
             for r in rs:
-
                 if verbose:
-                    print(f"Experiment {it+1} of {iterations}: {round((it+1)/iterations*100,2)}%")
+                    print(f"Experiment RDBSCAN {it+1} of {iterations}: {round((it+1)/iterations*100,2)}%")
+                rdbscan, predictR, tfR = test_RDBSCAN(X=X, epsilon=e, minPts=pts, radius=r, verbose=verbose)
+                results_RDBSCAN.append([rdbscan, predictR, tfR])
+                it += 1
 
-                dbscan, rdbscan, predictD, predictR, tfD, tfR = test(X=X, Y=Y, epsilon=e, minPts=pts, radius=r,
-                       name_experiment=f"{s}_E{e}_T{pts}_R{r}", root_saving=root_saving, plots=False, verbose=verbose)
+            if verbose:
+                print(f"Experiment DBSCAN {it + 1} of {iterations}: {round((it + 1) / iterations * 100, 2)}%")
 
+            if sklearn:
+                dbscan, predictD, tfD = test_DBSCAN_sklearn(X, e, pts, verbose=verbose)
+            else:
+                dbscan, predictD, tfD = test_DBSCAN_scratch(X, e, pts, verbose=verbose)
                 if dbscan.timelimit is not None:
-                    tfD = 3600 # Default One Hour Limit Exceeded
+                    tfD = 3600  # Default One Hour Limit Exceeded
+            it += 1
 
+
+            # Save values: RDBSCAN (all rs) with Same DBSCAN
+            if verbose:
+                print("Checkpoint: Saving sets of experiments")
+            for rough, preds, t in results_RDBSCAN:
                 results_experiment = pd.Series({
                     "Size": s,
                     "Epsilon": e,
                     "MinPts": pts,
-                    "Radius": r,
+                    "Radius": rough.radius,
 
-                    "Leaders": np.array(rdbscan.leaders),
-                    "Leaders Count": len(rdbscan.leaders),
+                    "Leaders": np.array(rough.leaders),
+                    "Leaders Count": len(rough.leaders),
 
-                    "Classification RoughDBSCAN": predictR,
+                    "Classification RoughDBSCAN": preds,
                     "Classification DBSCAN": predictD,
 
-                    "Rand-Index RoughDBSCAN": rand_score(Y, predictR),
+                    "Rand-Index RoughDBSCAN": rand_score(Y, preds),
                     "Rand-Index DBSCAN": rand_score(Y, predictD),
 
-                    "Time RoughDBSCAN": tfR,
+                    "Time RoughDBSCAN": t,
                     "Time DBSCAN": tfD
                 })
-
                 results.loc[len(results)] = results_experiment
                 results.to_csv(root_saving + name_experiment + ".csv", index=False)
-                it += 1
+
     return results
+
 
 
 def experiment_counted_leaders(datasets, root_saving="../visuals/", plots=True, verbose=True):

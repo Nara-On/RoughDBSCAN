@@ -6,7 +6,7 @@ from utils.tools import find_rough_N
 from scipy.spatial.distance import cdist
 
 
-class DBSCAN:
+class DBSCAN_scratch:
     def __init__(self, epsilon, minPts):
         self.epsilon = epsilon
         self.minPts = minPts
