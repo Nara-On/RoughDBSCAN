@@ -20,9 +20,6 @@ def test_RDBSCAN(X, epsilon, minPts, radius, verbose=True):
         print(f"Parameters: Epsilon={epsilon}, MinPts={minPts}, Radius={radius}")
     rdbscan = Rough_DBSCAN(epsilon, minPts, radius)
 
-    if verbose:
-        print("Fitting...")
-
     toR = time.time()
     predictR = rdbscan.fit_predict(X, verbose=verbose)
     tfR = time.time() - toR
@@ -30,16 +27,14 @@ def test_RDBSCAN(X, epsilon, minPts, radius, verbose=True):
     return rdbscan, predictR, tfR
 
 
-def test_DBSCAN_scratch(X, epsilon, minPts, verbose=True):
+def test_DBSCAN_scratch(X, epsilon, minPts, timelimit=3600, verbose=True):
     if verbose:
         print("\nStarting DBSCAN")
         print(f"Parameters: Epsilon={epsilon}, MinPts={minPts}")
     dbscan = DBSCAN_scratch(epsilon, minPts)
 
-    if verbose:
-        print("Fitting...")
     toD = time.time()
-    predictD = dbscan.fit_predict(X, timelimit=3600, verbose=verbose)
+    predictD = dbscan.fit_predict(X, timelimit=timelimit, verbose=verbose)
     tfD = time.time() - toD
 
     return dbscan, predictD, tfD
@@ -51,8 +46,6 @@ def test_DBSCAN_sklearn(X, epsilon, minPts, verbose=True):
         print(f"Parameters: Epsilon={epsilon}, MinPts={minPts}")
     dbscan = DBSCAN(eps=epsilon, min_samples=minPts)
 
-    if verbose:
-        print("Fitting...")
     toD = time.time()
     predictD = dbscan.fit_predict(X)
     tfD = time.time() - toD
@@ -61,14 +54,14 @@ def test_DBSCAN_sklearn(X, epsilon, minPts, verbose=True):
 
 
 def test(X, Y, epsilon, minPts, radius, name_experiment,
-               root_saving="../visuals/", plots=True, sklearn=False, verbose=True):
+         root_saving="../visuals/", plots=True, timelimit=3600, sklearn=False, verbose=True):
 
     rdbscan, predictR, tfR = test_RDBSCAN(X, epsilon, minPts, radius, verbose=True)
 
     if sklearn:
         dbscan, predictD, tfD = test_DBSCAN_sklearn(X, epsilon, minPts, verbose=True)
     else:
-        dbscan, predictD, tfD = test_DBSCAN_scratch(X, epsilon, minPts, verbose=True)
+        dbscan, predictD, tfD = test_DBSCAN_scratch(X, epsilon, minPts, timelimit=timelimit, verbose=True)
 
     if plots:
         if verbose:
@@ -81,7 +74,7 @@ def test(X, Y, epsilon, minPts, radius, name_experiment,
 
 
 def experiment(epsilons, minPts, rs, sizes, dataset,
-               name_experiment, root_saving="../visuals/", sklearn=False, verbose=True):
+               name_experiment, root_saving="../visuals/", timelimit=3600, sklearn=False, verbose=True):
 
     # Create Directory
     root = root_saving
@@ -96,7 +89,7 @@ def experiment(epsilons, minPts, rs, sizes, dataset,
     results = pd.DataFrame(columns=column_names)
 
     # Verbose reparations
-    iterations = len(epsilons) * len(rs) * len(sizes)
+    iterations = (len(epsilons) * len(rs) * len(sizes)) + (len(epsilons) * len(sizes))
 
     # Start Experiment
     it = 0
@@ -119,9 +112,9 @@ def experiment(epsilons, minPts, rs, sizes, dataset,
             if sklearn:
                 dbscan, predictD, tfD = test_DBSCAN_sklearn(X, e, pts, verbose=verbose)
             else:
-                dbscan, predictD, tfD = test_DBSCAN_scratch(X, e, pts, verbose=verbose)
-                if dbscan.timelimit is not None:
-                    tfD = 3600  # Default One Hour Limit Exceeded
+                dbscan, predictD, tfD = test_DBSCAN_scratch(X, e, pts, timelimit=timelimit, verbose=verbose)
+                if dbscan.exceeded:
+                    tfD = "More than 1 hour"  # Default One Hour Limit Exceeded
             it += 1
 
 

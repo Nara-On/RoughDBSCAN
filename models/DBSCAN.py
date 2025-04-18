@@ -10,9 +10,10 @@ class DBSCAN_scratch:
     def __init__(self, epsilon, minPts):
         self.epsilon = epsilon
         self.minPts = minPts
-
         self.labels = None
+
         self.timelimit = None
+        self.exceeded = False
 
 
     def fit(self, D, timelimit=None, verbose=True):
@@ -20,9 +21,11 @@ class DBSCAN_scratch:
         # Limit execution time to an hour
         t0 = 0
         limit = False
-        self.timelimit = timelimit
 
         if timelimit is not None:
+            if verbose:
+                print("Time limit activated")
+            self.timelimit = timelimit
             t0 = time.time()
             limit = True
 
@@ -79,7 +82,10 @@ class DBSCAN_scratch:
                             q.extend(list(indM[np.where(markings[indM] != 1.0)[0]]))
 
                         if limit and (timelimit < (time.time() - t0)):
+                            if verbose:
+                                print(f"Time limit EXCEEDED: {timelimit} < {(time.time() - t0)}")
                             self.labels = classification
+                            self.exceeded = True
                             return 1
 
         self.labels = classification

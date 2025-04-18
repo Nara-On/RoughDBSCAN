@@ -14,5 +14,5 @@ rs = [0.4, 0.35, 0.3, 0.25]
 if __name__ == "__main__":
     experiment(epsilons, minPts, rs, sizes, letter,
                name_experiment="scratch_results_letter", sklearn=False, root_saving=root_saving)
-    experiment(epsilons, minPts, rs, sizes, letter,
-               name_experiment="sklearn_results_letter", sklearn=True, root_saving=root_saving)
+    #experiment(epsilons, minPts, rs, sizes, letter,
+    #           name_experiment="sklearn_results_letter", sklearn=True, root_saving=root_saving)
