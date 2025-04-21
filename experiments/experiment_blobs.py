@@ -2,7 +2,7 @@
 from utils.datasets import blobs
 from utils.experiments import experiment
 
-root_saving = "../visuals/experiments/blobs/new_"
+root_saving = "../visuals/experiments/blobs/new/"
 
 sizes = [1000, 3000, 6000, 9000]
 minPts = [30, 90, 180, 270]

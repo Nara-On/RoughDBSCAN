@@ -2,8 +2,6 @@
 from scipy.spatial.distance import euclidean
 from utils.tools import coincidence
 
-import numpy as np
-
 
 class Counted_Leaders:
 

@@ -2,7 +2,7 @@
 from utils.datasets import shuttle
 from utils.experiments import experiment
 
-root_saving = "../visuals/experiments/shuttle/new"
+root_saving = "../visuals/experiments/shuttle/new/"
 
 sizes = [5000, 10000, 15000, 20000]
 minPts = [20, 40, 60, 80]

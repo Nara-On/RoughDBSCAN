@@ -49,7 +49,7 @@ class DBSCAN_scratch:
                 markings[i] = 1
 
                 # Find subset of patterns in D that are present in the hyper-sphere of radius e at x
-                N, indN = find_N(i, D, distance_matrix, self.epsilon)
+                N, indN = find_N(i, distance_matrix, self.epsilon)
 
                 if N < self.minPts:
                     # Mark x as "noise"
@@ -71,7 +71,7 @@ class DBSCAN_scratch:
                         j = q.pop(0)
                         markings[j] = 1
 
-                        M, indM = find_N(j, D, distance_matrix, self.epsilon)
+                        M, indM = find_N(j, distance_matrix, self.epsilon)
 
                         if M > self.minPts:
                             # Mark each pattern of M with cluster identifier cid

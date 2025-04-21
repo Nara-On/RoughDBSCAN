@@ -2,7 +2,7 @@
 from utils.datasets import letter
 from utils.experiments import experiment
 
-root_saving = "../visuals/experiments/letter/new_"
+root_saving = "../visuals/experiments/letter/new/"
 
 sizes = [2000, 4000, 6000, 8000]
 minPts = [8, 16, 24, 32]

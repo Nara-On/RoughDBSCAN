@@ -11,7 +11,7 @@ def coincidence(main, lookup):
                 return s
 
 
-def find_N(i, D, distances, e):
+def find_N(i, distances, e):
     ind = np.where([d <= e for d in distances[i, :]])[0]
     return len(ind), ind
 

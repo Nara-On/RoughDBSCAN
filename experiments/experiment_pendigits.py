@@ -2,7 +2,7 @@
 from utils.datasets import pendigits
 from utils.experiments import experiment
 
-root_saving = "../visuals/experiments/pendigits/new_"
+root_saving = "../visuals/experiments/pendigits/new/"
 
 sizes = [1000, 2000, 4000, 6000]
 minPts = [4, 8, 16, 24]
@@ -12,8 +12,7 @@ rs = [30, 25, 20, 15]
 
 
 if __name__ == "__main__":
-    # TODO: Complete scratch table with t=3600 for DBSCAN and the skleran measurements of RoughDBSCAN
-    experiment(epsilons, minPts, rs, sizes, pendigits,
-               name_experiment="scratch_results_pendigits", sklearn=False, root_saving=root_saving)
+    #experiment(epsilons, minPts, rs, sizes, pendigits,
+    #           name_experiment="scratch_results_pendigits", sklearn=False, root_saving=root_saving)
     experiment(epsilons, minPts, rs, sizes, pendigits,
                name_experiment="sklearn_results_pendigits", sklearn=True, root_saving=root_saving)

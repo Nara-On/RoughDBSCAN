@@ -3,7 +3,7 @@ from utils.datasets import blobs, banana, letter, pendigits, shuttle
 from utils.experiments import experiment_counted_leaders
 from utils.plots import plot_leader_count
 
-root_saving = "../visuals/experiments/leaders/new_"
+root_saving = "../visuals/experiments/leaders/new/"
 
 parameters = [
     ("Banana", banana, [1000, 2000, 3000, 4000, 5000], [0.1, 0.25, 0.5, 0.75]),

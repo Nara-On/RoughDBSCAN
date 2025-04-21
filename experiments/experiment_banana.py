@@ -2,7 +2,7 @@
 from utils.datasets import banana
 from utils.experiments import experiment
 
-root_saving = "../visuals/experiments/banana/new_"
+root_saving = "../visuals/experiments/banana/new/"
 
 sizes = [1000, 2000, 3000, 4000]
 minPts = [2, 4, 6, 8]
