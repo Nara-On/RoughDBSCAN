@@ -193,3 +193,98 @@ def experiment_counted_leaders(datasets, root_saving="../visuals/", plots=True, 
 
     if plots:
         plot_leader_count(results, root_saving + "results_leaders_patterns.jpg")
+
+
+
+def experiment_extra(epsilons, minPts, rs, sizes, dataset,
+               name_experiment, root_saving="../visuals/", timelimit=3600, sklearn=False, verbose=True):
+
+    # Create Directory
+    root = root_saving
+    if not os.path.exists(root):
+        os.makedirs(root)
+
+    # Create Results DataFrame
+    column_names = ["Size", "Epsilon", "MinPts", "Radius", "Leaders", "Leaders Count",
+                    "Classification RoughDBSCAN", "Classification DBSCAN",
+                    "Rand-Index RoughDBSCAN", "Rand-Index DBSCAN", "Time RoughDBSCAN", "Time DBSCAN"]
+
+    results = pd.DataFrame(columns=column_names)
+
+    # Verbose reparations
+    iterations = (len(epsilons) * len(rs) * len(sizes)) + (len(epsilons) * len(sizes))
+
+    # Start Experiment
+    it = 0
+    for s, pts in zip(sizes, minPts):
+        X,Y = dataset(s, verbose=verbose)
+
+        for e in epsilons:
+
+            results_RDBSCAN = []
+            for r in rs:
+                if verbose:
+                    print(f"Experiment RDBSCAN {it+1} of {iterations}: {round((it+1)/iterations*100,2)}%")
+                rdbscan, predictR, tfR = test_RDBSCAN(X=X, epsilon=e, minPts=pts, radius=r, verbose=verbose)
+                it += 1
+
+                # Save values: RDBSCAN
+                if verbose:
+                    print("Checkpoint: Saving sets of experiments")
+                results_experiment = pd.Series({
+                    "Size": s,
+                    "Epsilon": e,
+                    "MinPts": pts,
+                    "Radius": r,
+
+                    "Leaders": np.array(rdbscan.leaders),
+                    "Leaders Count": len(rdbscan.leaders),
+
+                    "Classification RoughDBSCAN": predictR,
+                    "Classification DBSCAN": "-",
+
+                    "Rand-Index RoughDBSCAN": rand_score(Y, predictR),
+                    "Rand-Index DBSCAN": "-",
+
+                    "Time RoughDBSCAN": tfR,
+                    "Time DBSCAN": "-"
+                })
+                results.loc[len(results)] = results_experiment
+                results.to_csv(root_saving + name_experiment + ".csv", index=False)
+
+            if verbose:
+                print(f"Experiment DBSCAN {it + 1} of {iterations}: {round((it + 1) / iterations * 100, 2)}%")
+
+            if sklearn:
+                dbscan, predictD, tfD = test_DBSCAN_sklearn(X, e, pts, verbose=verbose)
+            else:
+                dbscan, predictD, tfD = test_DBSCAN_scratch(X, e, pts, timelimit=timelimit, verbose=verbose)
+                if dbscan.exceeded:
+                    tfD = "More than 1 hour"  # Default One Hour Limit Exceeded
+
+            # Save values: RDBSCAN
+            if verbose:
+                print("Checkpoint: Saving sets of experiments")
+            results_experiment = pd.Series({
+                "Size": s,
+                "Epsilon": e,
+                "MinPts": pts,
+                "Radius": "-",
+
+                "Leaders": "-",
+                "Leaders Count": "-",
+
+                "Classification RoughDBSCAN": "-",
+                "Classification DBSCAN": predictD,
+
+                "Rand-Index RoughDBSCAN": "-",
+                "Rand-Index DBSCAN": rand_score(Y, predictD),
+
+                "Time RoughDBSCAN": "-",
+                "Time DBSCAN": tfD
+            })
+            results.loc[len(results)] = results_experiment
+            results.to_csv(root_saving + name_experiment + ".csv", index=False)
+            it += 1
+
+    return results

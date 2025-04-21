@@ -22,7 +22,7 @@ def letter(size, verbose=True):
     if verbose:
         print(f"Loading {size} samples from LETTER dataset")
 
-    data = np.loadtxt("../datasets/Letter/letter-recognition.data", dtype='float32', delimiter=',',
+    data = np.loadtxt("../datasets/Letter/letter-recogniºtion.data", dtype='float32', delimiter=',',
                       converters={0: lambda ch: ord(ch) - ord('A')})
 
     Y, X = np.hsplit(data[:size, :], [1])

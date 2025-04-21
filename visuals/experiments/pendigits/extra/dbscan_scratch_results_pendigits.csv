@@ -1,0 +1,9 @@
+Size,Epsilon,MinPts,Radius,Leaders,Leaders Count,Classification RoughDBSCAN,Classification DBSCAN,Rand-Index RoughDBSCAN,Rand-Index DBSCAN,Time RoughDBSCAN,Time DBSCAN
+6000,40,24,30,"[[ 47 100  27 ...  90  40  98]
+ [  0  89  27 ...   2 100   6]
+ [  0  57  31 ...  25  16   0]
+ ...
+ [ 16 100   0 ...  90  98 100]
+ [ 25 100  12 ...  42  77   0]
+ [  0  91  25 ...  29  72  38]]",2023,[12.  1.  2. ...  1. -1. 12.],-,0.8904015113630049,-,69.52707552909851,-
+6000,40,24,-,-,-,-,[-1.  1.  0. ...  1.  0.  0.],-,0.39485141968105797,-,More than 1 hour
