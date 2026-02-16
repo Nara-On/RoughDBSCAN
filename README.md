@@ -68,8 +68,14 @@ Marina Bermúdez Granados - <a href="https://github.com/nara-on">nara-on</a> <br
     * Extra experiments for PenDigits dataset 
 * Details
     * Minor optimizations 
+
+<br />
+
 * Scratch Experiments
     * Uploaded scratch results datasets for Banana, Blobs, Letter, PendDigits, and Shuttle datasets
+
+<br />
+
 * Sklearn Experiments + Fixing issues
     * Added sklearn code to experiment files
     * Uploaded sklearn results datasets for Banana, Blobs, Letter, and Shuttle datasets
@@ -86,6 +92,9 @@ Marina Bermúdez Granados - <a href="https://github.com/nara-on">nara-on</a> <br
     * Developed plotting functions for synthetic datasets
     * Uploaded visuals for Banana and Blobs dataset
     * Uploaded visuals for Leaders experiment
+
+<br />
+
 * Checkpoint Experiments
     * Tests folder created
     * Moved testing code to tests folder
@@ -96,6 +105,9 @@ Marina Bermúdez Granados - <a href="https://github.com/nara-on">nara-on</a> <br
     * Moved previous results to a separate tests folder in visuals
     * Uploaded PenDigits results in a separate experiments folder in visuals
     * Uploaded dense points documentation to visuals
+
+<br />
+
 * Testing Done
     * Updated PenDigits dataset
     * Developed experiment code for PenDigits
@@ -103,6 +115,9 @@ Marina Bermúdez Granados - <a href="https://github.com/nara-on">nara-on</a> <br
     * Reorganized fit and predict of DBSCAN
     * Optimized find_N function
     * Reorganization of visuals folder with new content
+
+<br />
+
 * Checkpoint: Real datasets tests
     * Updates to Shuttle dataset
     * Developed experiment code for Letter and SHuttle datasets
@@ -124,6 +139,9 @@ Marina Bermúdez Granados - <a href="https://github.com/nara-on">nara-on</a> <br
     * Developed experiments utils function
     * Developed plotting utils function
     * Updated old results
+
+<br />
+
 * Mini Refactor Experiments
     * Datasets folder created
     * Upload PenDigits, Letter, and Shuttle datasets to datasets folder
@@ -131,6 +149,9 @@ Marina Bermúdez Granados - <a href="https://github.com/nara-on">nara-on</a> <br
     * Update Rough_DBSCAN for fit_predict function
     * Developed generate_results utils function
     * Uploaded and refactored visuals of banana and blobs datasets
+
+<br />
+
 * Initial fit Rough DBSCAN
     * Experiments folder created
     * Visuals folder created
@@ -140,6 +161,9 @@ Marina Bermúdez Granados - <a href="https://github.com/nara-on">nara-on</a> <br
     * Developed find_N utils function
     * Developed code to experiments in banana and blobs dataset
     * Uploaded first results of experiments in banana and blob dataset
+
+<br />
+
 * Counted Leaders
     * Updates to Counted_Leaders class
     * Updates in coincidence function
