@@ -57,5 +57,106 @@ Marina Bermúdez Granados - <a href="https://github.com/nara-on">nara-on</a> <br
 <br />
 <br />
 
+## Version History
+* Updates to README.md
+    * Improvements for GitHub 
+* Requirements
+    * Update to requirements.txt 
+* Correction
+    * Fixed typo
+* More details
+    * Extra experiments for PenDigits dataset 
+* Details
+    * Minor optimizations 
+* Scratch Experiments
+    * Uploaded scratch results datasets for Banana, Blobs, Letter, PendDigits, and Shuttle datasets
+* Sklearn Experiments + Fixing issues
+    * Added sklearn code to experiment files
+    * Uploaded sklearn results datasets for Banana, Blobs, Letter, and Shuttle datasets
+    *  Minor corrections to timelimits in DBSCAN
+* Experiments PenDigits + Optimizations
+    * Developed experiment code for Banana dataset
+    * Renamed DBSCAN class to DBSCAN_scratch
+    * Updated testing code
+    * Uploaded results dataset for leaders
+    * Uploaded sklearn results dataset for PenDigits dataset
+* Experiment Leaders vs Patterns
+    * Updated hyperparameters in experiments
+    * Added default parameters to synthetic dataset
+    * Developed plotting functions for synthetic datasets
+    * Uploaded visuals for Banana and Blobs dataset
+    * Uploaded visuals for Leaders experiment
+* Checkpoint Experiments
+    * Tests folder created
+    * Moved testing code to tests folder
+    * Developed experiment code for blobs dataset
+    * Developed experiments code to test the Leaders
+    * Added timelimit to DBSCAN
+    * Moved plotting resources to separate file in utils
+    * Moved previous results to a separate tests folder in visuals
+    * Uploaded PenDigits results in a separate experiments folder in visuals
+    * Uploaded dense points documentation to visuals
+* Testing Done
+    * Updated PenDigits dataset
+    * Developed experiment code for PenDigits
+    * Updating hyperparameters for rest of experiments
+    * Reorganized fit and predict of DBSCAN
+    * Optimized find_N function
+    * Reorganization of visuals folder with new content
+* Checkpoint: Real datasets tests
+    * Updates to Shuttle dataset
+    * Developed experiment code for Letter and SHuttle datasets
+    * Minor printing modifications to DBSCAN and Rough_DBSCAN
+    * Minor updates to plot generation and dataset loading util functions
+    * Upload first Letter and Shuttle experiments
+* Fixed N, RDBSCAN Synthetic Tests
+    * Developed find_rough_N utils function
+    * Updated find_N utils funtcion
+    * Updated Counted_Leaders class
+    * Updates to DBSCAN for dual implementation of DBSCAN and Rough_DBSCAN
+    * Updates to Rough_DBSCAN
+    * Updates to plotting util functions
+    * Renamed experiment codes to tests
+    * Uploaded first set of visual results with different parameters
+* Refactor Experiments
+    * Developed code for the experiments of the remianing dataset
+    * Developed dataset generation utils function for each dataset
+    * Developed experiments utils function
+    * Developed plotting utils function
+    * Updated old results
+* Mini Refactor Experiments
+    * Datasets folder created
+    * Upload PenDigits, Letter, and Shuttle datasets to datasets folder
+    * Update DBSCAN for fit_predict function
+    * Update Rough_DBSCAN for fit_predict function
+    * Developed generate_results utils function
+    * Uploaded and refactored visuals of banana and blobs datasets
+* Initial fit Rough DBSCAN
+    * Experiments folder created
+    * Visuals folder created
+    * Updates to Counted_Leaders class
+    * Updates to Rough_DBSCAN class
+    * Developed separate DBSCAN class
+    * Developed find_N utils function
+    * Developed code to experiments in banana and blobs dataset
+    * Uploaded first results of experiments in banana and blob dataset
+* Counted Leaders
+    * Updates to Counted_Leaders class
+    * Updates in coincidence function
+* Developing Counted Leaders
+    * First version of Counted Leaders
+    * Developed coincidence utils function
+    * Update README.md
+* Basic structure
+    * Models folder created
+    * Utils folder created
+    * Base code for Counted_Leaders and Rough_DBSCAN classes
+    * First version of README.md
+    * First version of requirements.txt
+    * Added gitignore file
+* Initial Commit
+    * Initial Release
+
+
 [github-shield]: https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white
 [github-url]: https://github.com/Nara-On
